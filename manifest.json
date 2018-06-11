@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+
+  "name": "Amazon Book Data HTML to JSON",
+  "description": "Extract the book data from the Amazon URL in the current active tab",
+  "version": "1.0",
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "32": "icon.png"
+    }
+  },
+
+  "content_scripts": [{
+    "matches": ["https://*.amazon.com/*"],
+    "js": ["jquery-3.3.1.min.js", "book-content.js"],
+    "run_at": "document_end"
+  }],
+
+  "permissions": ["declarativeContent", "activeTab", "downloads"]
+}
