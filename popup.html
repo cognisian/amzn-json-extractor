@@ -4,13 +4,24 @@
     <title>Amazon Book Data</title>
     <script src="jquery-3.3.1.min.js"></script>
     <script src="popup.js"></script>
+    <style>
+      a {
+        font-size: 1.4em;
+      }
+      pre {
+        width: 100%;
+        font-size: 1.4em;
+        white-space: pre-wrap;
+        overflow-x: auto;
+      }
+    </style>
   </head>
   <body style="width: 320px;">
     <h1>Amazon Book Data</h1>
 
-    <label for="book-json">Book JSON</label>
-    <textarea id="book-json" name="book-json" rows="10" style="width: 100%;"></textarea>
-    <br />
     <a id="download-json" href="">Download</a>
+    <br /><br />
+    <label for="book-json">Book JSON</label>
+    <pre id="book-json"></pre>
   </body>
 </html>

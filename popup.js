@@ -13,7 +13,7 @@ $(document).ready(function() {
     var download_file = isbn + '_' + title + '.json';
 
     // Get book display area
-    var book_json_el = $('textarea#book-json');
+    var book_json_el = $('#book-json');
     $(book_json_el).append(contents);
 
     // Hook button up so it will download the json

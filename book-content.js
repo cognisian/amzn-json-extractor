@@ -37,10 +37,13 @@ window.addEventListener("load", function () {
           // We are on correct page so find the Book title, isbn, authors, desc, images
           var descElems = $('iframe#bookDesc_iframe').contents();
           var descTextElems = $(descElems).find('div#iframeContent').contents();
-          var descText = $(descTextElems).map(function(e, i) {
-            if (this.nodeType === 3) { return $(this).text(); }
-            else { return $(this).prop('outerHTML'); }
-          }).toArray().join('');
+          var descText = $(descTextElems).prop('outerHTML');
+          if (typeof descText == 'undefined') {
+            descText = $(descTextElems).map(function(i, e) {
+              if (this.nodeType === 3) { return $(this).text(); }
+              else { return $(this).prop('outerHTML'); }
+            }).toArray().join('');
+          }
 
           var productDetailsElems = $('table#productDetailsTable div.content ul');
           var isbnText = $(productDetailsElems).find('li:has(b:contains("ISBN-10:"))').text();
@@ -70,8 +73,8 @@ window.addEventListener("load", function () {
         }
       }
       else {
-        // Send message to popup
         chrome.runtime.sendMessage({type: "log", obj: 'Could not find Paperback details'});
+        // Send message to popup
       }
   });
 }, false);
