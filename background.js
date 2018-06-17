@@ -31,7 +31,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       sendResponse({book: book});
       break;
     case "create_book":
-      book = message.book
+      book = message.book;
+      break;
+    case "add_detail":
+      console.log(message.type);
+      console.log(message.obj);
+      book[message.term] = message.obj;
       break;
   }
   return true;

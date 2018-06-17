@@ -157,7 +157,7 @@ window.addEventListener("load", function () {
         'url':      parse_URL(resp.tab),
         'title':    parse_title(),
         'isbn':     parse_ISBN(),
-        'desc':     parse_summary(),
+        'summary':  parse_summary(),
         'authors':  parse_authors(),
         'image':    parse_image(),
         'rating':   parse_rating()
