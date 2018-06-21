@@ -23,14 +23,15 @@ $(document).ready(function() {
       { no_results_text: "<b>Press ENTER</b> to add new entry:" }
     );
 
-    // Update the boko with selected values
+    // Update the book with user selected terms
     $(elem_id).chosen().on('change', function(ev, params) {
       var id = $(this).attr("id");
       var value = $(this).val();
-      chrome.runtime.sendMessage({type: 'add_detail', term: id, obj: value});
+      chrome.runtime.sendMessage({type: 'update_book', term: id, obj: value});
     });
 
-    // Allow adding new values
+    // Allow adding new values to terms
+    // TODO Adding new book term should update localStorage
     var search_field = chosen.data("chosen").search_field;
     $(search_field).on("keyup", function(evt) {
 
@@ -49,6 +50,8 @@ $(document).ready(function() {
         // Trigger the update to refresh list of options
         chosen.trigger("chosen:updated");
       }
+
+      return false;
     });
   });
 
@@ -75,8 +78,7 @@ $(document).ready(function() {
         url: url,
         filename: download_file
       });
-
-      return false;
+      
     });
 
     return false;

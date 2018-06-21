@@ -3,8 +3,8 @@
 // Chrome Extension content script to be injected into Amazon pages to
 // extract book information and image URLs
 //
-// Check if the current page has the Paperback/Mass Paperback format selected
-function is_paperback() {
+// Check if the current page has the Paperback/Mass Paperback/Kindle format selected
+function is_parsable() {
 
   var res = false;
 
@@ -31,7 +31,7 @@ function is_paperback() {
     }
   }
 
-  if (format.indexOf('Paperback') >= 0) { res = true; }
+  if (format.indexOf('Paperback') >= 0 || format.indexOf('Kindle') >= 0) { res = true; }
 
   return res;
 }
@@ -122,6 +122,10 @@ function parse_summary() {
 function parse_image() {
 
   var image_elm = $('img#imgBlkFront');
+  if (image_elm.length == 0) {
+    // Looking at Kindle swatch so different img #ID
+    var image_elm = $('img#ebooksImgBlkFront');
+  }
   var image_types = JSON.parse(image_elm.attr('data-a-dynamic-image'));
   var image_url = $(Object.keys(image_types)).filter(function(i, elem) {
     // Find the medium image based on height coord
@@ -146,27 +150,42 @@ function parse_rating() {
 //////////////////////////////////////////////////////////////////////////////
 // Entry Point
 //////////////////////////////////////////////////////////////////////////////
-window.addEventListener("load", function () {
+//
+// Depends on the fact that the content script is run_at document_idle so
+// no need to listen for document loaded, but to be safe poll for it
+//
+var interval = setInterval(extract_book, 250);
 
-  // Ask the background script what tab this content script is running in
-  // and then parse the info from that page
-  chrome.runtime.sendMessage({type: 'query_tab', obj: null}, function(resp) {
-    if (is_paperback()) {
-      // Collect the info from the Paperback format
-      var book = {
-        'url':      parse_URL(resp.tab),
-        'title':    parse_title(),
-        'isbn':     parse_ISBN(),
-        'summary':  parse_summary(),
-        'authors':  parse_authors(),
-        'image':    parse_image(),
-        'rating':   parse_rating()
-      };
-      // Send to background page
-      chrome.runtime.sendMessage({type: "create_book", book: book});
-    }
-    else {
-      chrome.runtime.sendMessage({type: "log", obj: 'Could not find Paperback details'});
-    }
-  });
-}, false);
+// Extract book details when ready and clear the timer when done
+function extract_book() {
+
+  if (document.readyState === 'complete') {
+    clearInterval(interval);
+
+    // Get the book details from the web page
+    chrome.runtime.sendMessage({type: 'query_tab', obj: null}, function(resp) {
+
+      // Set the icon if thecurrent Swatch is parseable (ie Paperback/Kindle)
+      chrome.runtime.sendMessage({type: 'update_tab', obj: is_parsable()});
+
+      // Get the book data from the page
+      if (is_parsable()) {
+        // Collect the info from the Paperback format
+        var book = {
+          'url':      parse_URL(resp.tab),
+          'title':    parse_title(),
+          'isbn':     parse_ISBN(),
+          'summary':  parse_summary(),
+          'authors':  parse_authors(),
+          'image':    parse_image(),
+          'rating':   parse_rating()
+        };
+        // Send to background page
+        chrome.runtime.sendMessage({type: "create_book", book: book});
+      }
+      else {
+        chrome.runtime.sendMessage({type: "log", obj: 'Could not find Paperback details'});
+      }
+    });
+  }
+}
