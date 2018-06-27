@@ -5,6 +5,8 @@
   "description": "Extract the book data from the Amazon URL in the current active tab",
   "version": "1.0",
 
+  "options_page": "options.html",
+
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -19,9 +21,9 @@
 
   "content_scripts": [{
     "matches": ["https://*.amazon.com/*"],
-    "js": ["jquery-3.3.1.min.js", "book-content.js"],
+    "js": ["js/jquery-3.3.1.min.js", "book-content.js"],
     "run_at": "document_idle"
   }],
 
-  "permissions": ["declarativeContent", "activeTab", "downloads"]
+  "permissions": ["declarativeContent", "activeTab", "downloads", "storage"]
 }
