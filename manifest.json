@@ -22,7 +22,7 @@
   "content_scripts": [{
     "matches": ["https://*.amazon.com/*"],
     "js": ["js/jquery-3.3.1.min.js", "book-content.js"],
-    "run_at": "document_idle"
+    "run_at": "document_end"
   }],
 
   "permissions": ["declarativeContent", "activeTab", "downloads", "storage"]

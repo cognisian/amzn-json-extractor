@@ -150,42 +150,31 @@ function parse_rating() {
 //////////////////////////////////////////////////////////////////////////////
 // Entry Point
 //////////////////////////////////////////////////////////////////////////////
-//
-// Depends on the fact that the content script is run_at document_idle so
-// no need to listen for document loaded, but to be safe poll for it
-//
-var interval = setInterval(extract_book, 250);
+$(document).ready(function() {
 
-// Extract book details when ready and clear the timer when done
-function extract_book() {
+  // Get the book details from the web page
+  chrome.runtime.sendMessage({type: 'query_tab', obj: null}, function(resp) {
 
-  if (document.readyState === 'complete') {
-    clearInterval(interval);
+    // Set the icon if thecurrent Swatch is parseable (ie Paperback/Kindle)
+    chrome.runtime.sendMessage({type: 'update_tab', obj: is_parsable()});
 
-    // Get the book details from the web page
-    chrome.runtime.sendMessage({type: 'query_tab', obj: null}, function(resp) {
-
-      // Set the icon if thecurrent Swatch is parseable (ie Paperback/Kindle)
-      chrome.runtime.sendMessage({type: 'update_tab', obj: is_parsable()});
-
-      // Get the book data from the page
-      if (is_parsable()) {
-        // Collect the info from the Paperback format
-        var book = {
-          'url':      parse_URL(resp.tab),
-          'title':    parse_title(),
-          'isbn':     parse_ISBN(),
-          'summary':  parse_summary(),
-          'authors':  parse_authors(),
-          'image':    parse_image(),
-          'rating':   parse_rating()
-        };
-        // Send to background page
-        chrome.runtime.sendMessage({type: "create_book", book: book});
-      }
-      else {
-        chrome.runtime.sendMessage({type: "log", obj: 'Could not find Paperback details'});
-      }
-    });
-  }
-}
+    // Get the book data from the page
+    if (is_parsable()) {
+      // Collect the info from the Paperback format
+      var book = {
+        'url':      parse_URL(resp.tab),
+        'title':    parse_title(),
+        'isbn':     parse_ISBN(),
+        'summary':  parse_summary(),
+        'authors':  parse_authors(),
+        'image':    parse_image(),
+        'rating':   parse_rating()
+      };
+      // Send to background page
+      chrome.runtime.sendMessage({type: "create_book", book: book});
+    }
+    else {
+      chrome.runtime.sendMessage({type: "log", obj: 'Could not find Paperback details'});
+    }
+  });
+});

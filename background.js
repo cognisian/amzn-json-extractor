@@ -28,6 +28,17 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     case "update_book":
       book[message.term] = message.obj;
       break;
+    case "add_book_prop":
+      if (!book[message.term]) {
+        book[message.term] = [];
+      }
+      book[message.term].push(message.obj);
+      break;
+    case "del_book_prop":
+      book[message.term] = book[message.term].filter(function(v) {
+        return v !== message.obj
+      });
+      break;
   };
 });
 
