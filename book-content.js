@@ -69,7 +69,21 @@ function parse_ISBN() {
   return isbn_text;
 }
 
+// From the page, extract the book ISBN
+//
+// @return string The ISBN-13 number
+function parse_ISBN13() {
+
+  var prod_details_elms = $('table#productDetailsTable div.content ul');
+  var isbn_text = $(prod_details_elms).find('li:has(b:contains("ISBN-13:"))').text();
+
+  isbn_text = isbn_text.split(' ')[1];
+  return isbn_text;
+}
+
 // From the page, extract the book title
+//
+// @return string the ISBN-13 number
 function parse_title() {
 
   var title = $('span#productTitle').text();
