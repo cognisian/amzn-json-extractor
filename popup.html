@@ -20,22 +20,31 @@
 
       main {
         flex: 1 0 auto;
+        height: 80vh;
+        overflow-y: auto;
+        margin-left: 8px;
       }
 
       footer: {
-        bottom: 0;
-        position: fixed;
+        height: 20vh;
       }
 
+      h4 {
+        color: teal;
+      }
+      
       textarea.materialize-textarea {
         height: 20rem;
       }
+
+      .page-footer {
+        background-color: teal;
+      }
     </style>
   </head>
-  <body class="container" style="width: 320px;">
-    <h4>Import Book Data</h4>
-
-    <main class="main">
+  <body style="width: 320px; height: 520px;">
+    <main>
+      <h4>Import Book Data</h4>
       <div class="row">
         <div class="col s12">
           <!-- Genres -->
