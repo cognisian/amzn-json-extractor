@@ -17,7 +17,7 @@ function is_parsable() {
     // Page is in 'Swatches' format
     var selected_format_elm = format_elms.find('li.swatchElement.selected');
     if (selected_format_elm.length != 0) {
-      format = selected_format_elm.find('a.a-button-text > span').text();
+      format = selected_format_elm.find('a.a-button-text span').text();
     }
   }
   else {
@@ -31,7 +31,10 @@ function is_parsable() {
     }
   }
 
-  if (format.indexOf('Paperback') >= 0 || format.indexOf('Kindle') >= 0) { res = true; }
+  if (format.indexOf('Paperback') >= 0 || format.indexOf('Kindle') >= 0 ||
+        format.indexOf('Hardcover') >= 0) {
+      res = true;
+  }
 
   return res;
 }
@@ -81,12 +84,29 @@ function parse_ISBN13() {
   return isbn_text;
 }
 
+// From the page, extract the book ISBN
+//
+// @return string The ISBN-13 number
+function parse_ASIN() {
+
+  var prod_details_elms = $('table#productDetailsTable div.content ul');
+  var asin_text = $(prod_details_elms).find('li:has(b:contains("ASIN:"))').text();
+
+  asin_text = asin_text.split(' ')[1];
+  return asin_text;
+}
+
 // From the page, extract the book title
 //
-// @return string the ISBN-13 number
+// @return string The book/kindle title
 function parse_title() {
 
+  // Get the title depends on format (paperbacak/hardcover/kindle)
   var title = $('span#productTitle').text();
+  if (!title) {
+    title = $('span#ebooksProductTitle').text();
+  }
+
   var bracket = title.indexOf('(');
   // If title contains brackets then remove as it is not part of title
   if (bracket > 0) {
@@ -178,7 +198,7 @@ $(document).ready(function() {
       var book = {
         'url':      parse_URL(resp.tab),
         'title':    parse_title(),
-        'isbn':     parse_ISBN(),
+        'isbn':     parse_ISBN() || parse_ISBN13() || parse_ASIN(),
         'summary':  parse_summary(),
         'authors':  parse_authors(),
         'image':    parse_image(),
