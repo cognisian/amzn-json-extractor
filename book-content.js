@@ -137,16 +137,11 @@ function parse_summary() {
 
   var desc_elms = $('iframe#bookDesc_iframe').contents();
   var desc_text_elms = $(desc_elms).find('div#iframeContent').contents();
-  var desc_text = $(desc_text_elms).prop('outerHTML');
-  // Amazon has tags/text nodes mixed as the desc.  We want to keep the formatting so we have
-  // test if a text node is first as this seems to have an impact what 'outerHTML' returns
-  if (typeof desc_text == 'undefined') {
-    desc_text = $(desc_text_elms).map(function(i, e) {
+  var desc_text = $(desc_text_elms).map(function(i, e) {
       if (this.nodeType === 3) { return $(this).text(); }
       else { return $(this).prop('outerHTML'); }
     }).toArray().join('');
-  }
-
+    
   return desc_text;
 }
 
