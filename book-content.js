@@ -122,7 +122,7 @@ function parse_title() {
 // @return array The array of author names
 function parse_authors() {
 
-  var authors_elms = $('div#bylineInfo span.author a.contributorNameID');
+  var authors_elms = $('div#bylineInfo span.author a.a-link-normal');
   var authors = $(authors_elms).map(function(i, e) {
     return $(e).text();
   });
@@ -141,7 +141,7 @@ function parse_summary() {
       if (this.nodeType === 3) { return $(this).text(); }
       else { return $(this).prop('outerHTML'); }
     }).toArray().join('');
-    
+
   return desc_text;
 }
 
