@@ -1,4 +1,3 @@
-// chrome.runtime.sendMessage({type: "log", obj: fullpath});
 //
 // Chrome Extension content script to be injected into Amazon pages to
 // extract book information and image URLs
@@ -30,7 +29,7 @@ function is_parsable() {
       }
     }
   }
-
+  chrome.runtime.sendMessage({type: "log", obj: 'FORMAT' + format});
   if (format.indexOf('Paperback') >= 0 || format.indexOf('Kindle') >= 0 ||
         format.indexOf('Hardcover') >= 0) {
       res = true;
@@ -65,7 +64,7 @@ function parse_URL(tab) {
 // @return string The ISBN-10 number
 function parse_ISBN() {
 
-  var prod_details_elms = $('table#productDetailsTable div.content ul');
+  var prod_details_elms = $('div#detail-bullets table#productDetailsTable div.content ul');
   var isbn_text = $(prod_details_elms).find('li:has(b:contains("ISBN-10:"))').text();
 
   isbn_text = isbn_text.split(' ')[1];
@@ -77,7 +76,7 @@ function parse_ISBN() {
 // @return string The ISBN-13 number
 function parse_ISBN13() {
 
-  var prod_details_elms = $('table#productDetailsTable div.content ul');
+  var prod_details_elms = $('div#detail-bullets table#productDetailsTable div.content ul');
   var isbn_text = $(prod_details_elms).find('li:has(b:contains("ISBN-13:"))').text();
 
   isbn_text = isbn_text.split(' ')[1];
@@ -89,7 +88,7 @@ function parse_ISBN13() {
 // @return string The ISBN-13 number
 function parse_ASIN() {
 
-  var prod_details_elms = $('table#productDetailsTable div.content ul');
+  var prod_details_elms = $('div#detail-bullets table#productDetailsTable div.content ul');
   var asin_text = $(prod_details_elms).find('li:has(b:contains("ASIN:"))').text();
 
   asin_text = asin_text.split(' ')[1];
@@ -122,7 +121,7 @@ function parse_title() {
 // @return array The array of author names
 function parse_authors() {
 
-  var authors_elms = $('div#bylineInfo span.author a.a-link-normal');
+  var authors_elms = $('div#bylineInfo span.a-declarative a.contributorNameID');
   var authors = $(authors_elms).map(function(i, e) {
     return $(e).text();
   });
